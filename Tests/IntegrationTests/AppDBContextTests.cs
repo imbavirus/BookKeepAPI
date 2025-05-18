@@ -2,11 +2,20 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using BookKeepAPI.Application.Models.BookData;
 using Xunit;
+using BookKeepAPI.Application.Data;
 
 namespace BookKeepAPI.Tests.IntegrationTests;
 
+/// <summary>
+/// Contains integration tests for the <see cref="AppDbContext"/>,
+/// specifically focusing on the automatic handling of audit properties (CreatedOn, UpdatedOn).
+/// </summary>
 public class AppDbContextTests
 {
+    /// <summary>
+    /// Verifies that the <see cref="AppDbContext.SaveChangesAsync"/> method correctly sets the
+    /// CreatedOn and UpdatedOn audit properties when adding and modifying a <see cref="Book"/> entity.
+    /// </summary>
     [Fact]
     public async Task SaveChanges_ShouldSetAuditPropertiesCorrectly()
     {
