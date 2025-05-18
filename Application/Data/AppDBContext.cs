@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using BookKeepAPI.Application.Models;
-using BookKeepAPI.Application.Models.Book;
+using BookKeepAPI.Application.Models.BookData;
 
 namespace BookKeepAPI.Application.Data;
 

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BookKeepAPI.Application.Models.Book;
+namespace BookKeepAPI.Application.Models.BookData;
 
 /// <summary>
 /// Represents the interface for a book model with properties such as title, author, ISBN, and more.

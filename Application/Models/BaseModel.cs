@@ -26,6 +26,10 @@ public interface IBaseModel
     /// Gets or sets the date and time when the entity was last updated, in UTC.
     /// </summary>
     DateTime UpdatedOn { get; set; }
+    /// <summary>
+    /// Gets or sets a value indicating whether the entity is currently active or considered soft-deleted.
+    /// </summary>
+    bool IsActive { get; set; }
 
     /* These would additionally be added if I were to add user authentication */
     // /// <summary>
@@ -78,6 +82,12 @@ public abstract class BaseModel : IBaseModel
     public DateTime UpdatedOn { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the entity is currently active.
+    /// Defaults to true upon creation.
+    /// </summary>
+    public bool IsActive { get; set; }
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="BaseModel"/> class.
     /// Sets the <see cref="CreatedOn"/> and <see cref="UpdatedOn"/> timestamps to the current UTC time.
     /// </summary>
@@ -85,6 +95,7 @@ public abstract class BaseModel : IBaseModel
     {
         CreatedOn = DateTime.UtcNow;
         UpdatedOn = DateTime.UtcNow; // On creation, UpdatedOn is the same as CreatedOn
+        IsActive = true; // Default to active on creation
     }
 
     /* These would additionally be added if I were to add user authentication */

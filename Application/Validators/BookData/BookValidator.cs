@@ -1,7 +1,7 @@
 using FluentValidation;
-using BookKeepAPI.Application.Models.Book;
+using BookKeepAPI.Application.Models.BookData;
 
-namespace BookKeepAPI.Application.Validators;
+namespace BookKeepAPI.Application.Validators.BookData;
 
 /// <summary>
 /// Validator for the <see cref="Book"/> model.
