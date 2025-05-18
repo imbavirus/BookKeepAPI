@@ -31,19 +31,19 @@ public interface IBaseModel
     // /// <summary>
     // /// Gets or sets the ID of the user who created this entity. Nullable if the creator is anonymous or not tracked.
     // /// </summary>
-    // ulong? CreatedByUserProfileId { get; set; }
+    // ulong? CreatedByUserId { get; set; }
     // /// <summary>
-    // /// Gets or sets the navigation property to the UserProfile of the user who created this entity.
+    // /// Gets or sets the navigation property to the User of the user who created this entity.
     // /// </summary>
-    // UserProfile? CreatedByUserProfile { get; set; }
+    // User? CreatedByUser { get; set; }
     // /// <summary>
     // /// Gets or sets the ID of the user who last updated this entity. Nullable if the updater is anonymous or not tracked.
     // /// </summary>
-    // ulong? UpdatedByUserProfileId { get; set; }
+    // ulong? UpdatedByUserId { get; set; }
     // /// <summary>
-    // /// Gets or sets the navigation property to the UserProfile of the user who last updated this entity.
+    // /// Gets or sets the navigation property to the User of the user who last updated this entity.
     // /// </summary>
-    // UserProfile? UpdatedByUserProfile { get; set; }
+    // User? UpdatedByUser { get; set; }
 }
 
 /// <summary>
@@ -92,24 +92,24 @@ public abstract class BaseModel : IBaseModel
     // /// Gets or sets the foreign key for the user who created this entity.
     // /// This would be used if user tracking for creation is implemented.
     // /// </summary>
-    // public ulong? CreatedByUserProfileId { get; set; }
+    // public ulong? CreatedByUserId { get; set; }
 
     // /// <summary>
-    // /// Gets or sets the navigation property to the UserProfile of the user who created this entity.
+    // /// Gets or sets the navigation property to the User of the user who created this entity.
     // /// This would be used if user tracking for creation is implemented.
     // /// </summary>
-    // [ForeignKey("CreatedByUserProfileId")]
-    // public virtual UserProfile? CreatedByUserProfile { get; set; }
+    // [ForeignKey("CreatedByUserId")]
+    // public virtual User? CreatedByUser { get; set; }
 
     // /// <summary>
     // /// Gets or sets the foreign key for the user who last updated this entity.
     // /// This would be used if user tracking for updates is implemented.
     // /// </summary>
-    // public ulong? UpdatedByUserProfileId { get; set; }
+    // public ulong? UpdatedByUserId { get; set; }
     // /// <summary>
-    // /// Gets or sets the navigation property to the UserProfile of the user who last updated this entity.
+    // /// Gets or sets the navigation property to the User of the user who last updated this entity.
     // /// This would be used if user tracking for updates is implemented.
     // /// </summary>
-    // [ForeignKey("UpdatedByUserProfileId")]
-    // public virtual UserProfile? UpdatedByUserProfile { get; set; }
+    // [ForeignKey("UpdatedByUserId")]
+    // public virtual User? UpdatedByUser { get; set; }
 }
