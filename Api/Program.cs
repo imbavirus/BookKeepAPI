@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using BookKeepAPI.Application.Data;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using BookKeepAPI.Api.Middleware.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,7 +61,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// app.UseExceptionHandler(options => options.UseMiddleware<ExceptionMiddleware>());
+app.UseExceptionHandler(options => options.UseMiddleware<ExceptionMiddleware>());
 
 app.UseHttpsRedirection();
 
