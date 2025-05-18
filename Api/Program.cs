@@ -4,6 +4,9 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using BookKeepAPI.Api.Middleware.Implementation;
 using BookKeepAPI.Application.Validators;
+using BookKeepAPI.Application.Validators.BookData;
+using BookKeepAPI.Application.Managers.BookData;
+using BookKeepAPI.Application.Managers.BookData.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,9 +27,10 @@ builder.WebHost.UseUrls("http://0.0.0.0:5000");
 builder.Services.AddFluentValidationAutoValidation(); // Enables automatic server-side validation
 builder.Services.AddValidatorsFromAssemblyContaining<BaseModelValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<BookDtoValidator>();
 
 // Add Managers
-// builder.Services.AddScoped<IBookManager, BookManager>();
+builder.Services.AddScoped<IBookManager, BookManager>();
 
 // Add Services
 // builder.Services.AddScoped<IBookService, BookService>();
