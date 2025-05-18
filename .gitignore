@@ -158,3 +158,8 @@ secrets.json # ASP.NET Core User Secrets (local, not for commit)
 *.keypair
 *.p12
 *.pfx
+
+# SQLite database files
+API/*.db
+API/*.db-shm
+API/*.db-wal

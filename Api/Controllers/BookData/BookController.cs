@@ -17,7 +17,7 @@ public class BooksController(IBookService bookService, ILogger<BooksController> 
     /// </summary>
     /// <param name="id">The ID of the book to retrieve.</param>
     /// <returns>The book if found; otherwise, NotFound.</returns>
-    [HttpGet("{id:ulong}")]
+    [HttpGet("{id:long}")]
     [ProducesResponseType(typeof(IBook), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IBook>> GetBookById(ulong id)
@@ -74,7 +74,7 @@ public class BooksController(IBookService bookService, ILogger<BooksController> 
     /// <param name="id">The ID of the book to update.</param>
     /// <param name="bookDto">The book data to update.</param>
     /// <returns>NoContent if successful; otherwise, BadRequest or NotFound.</returns>
-    [HttpPut("{id:ulong}")]
+    [HttpPut("{id:long}")]
     [ProducesResponseType(typeof(IBook), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -96,7 +96,7 @@ public class BooksController(IBookService bookService, ILogger<BooksController> 
     /// </summary>
     /// <param name="id">The ID of the book to delete.</param>
     /// <returns>NoContent if successful; otherwise, NotFound.</returns>
-    [HttpDelete("{id:ulong}")]
+    [HttpDelete("{id:long}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteBook(ulong id)
