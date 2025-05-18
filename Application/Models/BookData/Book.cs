@@ -50,6 +50,15 @@ public interface IBook : IBaseModel
 public class Book(string title, string author, string isbn, string? description = null, int? publicationYear = null, string? genre = null, string? coverImageUrl = null) : BaseModel, IBook
 {
     /// <summary>
+    /// Private parameterless constructor for EF Core materialization.
+    /// Initializes non-nullable string properties to satisfy the C# compiler;
+    /// EF Core will overwrite these with values from the database upon materialization.
+    /// </summary>
+    private Book() : this(string.Empty, string.Empty, string.Empty) // Ensure BaseModel properties are initialized (e.g., Guid, CreatedOn)
+    {
+    }
+
+    /// <summary>
     /// Gets or sets the title of the book.
     /// </summary>
     [Required(ErrorMessage = "Title is required.")]
