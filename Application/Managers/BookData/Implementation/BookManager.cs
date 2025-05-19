@@ -2,15 +2,17 @@ using Microsoft.EntityFrameworkCore;
 using BookKeepAPI.Application.Data;
 using BookKeepAPI.Application.Models.BookData;
 using BookKeepAPI.Application.Dtos.BookData;
+using BookKeepAPI.Application.Managers.External.OpenLibrary;
 
 namespace BookKeepAPI.Application.Managers.BookData.Implementation;
 
 /// <summary>
 /// Manages CRUD operations for <see cref="Book"/> entities.
 /// </summary>
-public class BookManager(AppDbContext context) : IBookManager
+public class BookManager(AppDbContext context, IOpenLibraryManager OpenLibraryManager) : IBookManager
 {
     private readonly AppDbContext _context = context;
+    private readonly IOpenLibraryManager _OpenLibraryManager = OpenLibraryManager;
 
     /// <summary>
     /// Retrieves a book by its unique identifier.
@@ -62,6 +64,14 @@ public class BookManager(AppDbContext context) : IBookManager
         existingBook.PublicationYear = bookUpdate.PublicationYear;
         existingBook.Genre = bookUpdate.Genre;
         existingBook.CoverImageUrl = bookUpdate.CoverImageUrl;
+
+        // If CoverImageUrl from DTO is empty, try fetching from Open Library
+        if (string.IsNullOrEmpty(existingBook.CoverImageUrl) && !string.IsNullOrWhiteSpace(existingBook.ISBN))
+        {
+            var openLibraryCoverUrl = await _OpenLibraryManager.FetchCoverUrlByIsbnAsync(existingBook.ISBN);
+            if (!string.IsNullOrEmpty(openLibraryCoverUrl)) existingBook.CoverImageUrl = openLibraryCoverUrl;
+        }
+
         // Guid should typically not be updated. CreatedOn is handled by AppDbContext.
         // UpdatedOn will be handled by AppDbContext.
         // IsActive is only set using delete and create
@@ -120,6 +130,14 @@ public class BookManager(AppDbContext context) : IBookManager
             Guid = entityGuid, // Ensure the validated or generated Guid is set.
             IsActive = true   // New books are active by default.
         };
+
+        // If CoverImageUrl from DTO is empty, try fetching from Open Library
+        if (string.IsNullOrEmpty(bookEntity.CoverImageUrl) && !string.IsNullOrWhiteSpace(bookEntity.ISBN))
+        {
+            var openLibraryCoverUrl = await _OpenLibraryManager.FetchCoverUrlByIsbnAsync(bookEntity.ISBN);
+            if (!string.IsNullOrEmpty(openLibraryCoverUrl)) bookEntity.CoverImageUrl = openLibraryCoverUrl;
+        }
+        
         // Id, CreatedOn, UpdatedOn are handled by BaseModel constructor or AppDbContext.
 
         _context.Books.Add(bookEntity);

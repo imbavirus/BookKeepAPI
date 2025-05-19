@@ -5,6 +5,8 @@ using BookKeepAPI.Application.Managers.BookData.Implementation;
 using BookKeepAPI.Application.Models.BookData;
 using BookKeepAPI.Application.Dtos.BookData;
 using Xunit;
+using Moq;
+using BookKeepAPI.Application.Managers.External.OpenLibrary;
 
 namespace BookKeepAPI.Tests.IntegrationTests;
 
@@ -16,6 +18,7 @@ namespace BookKeepAPI.Tests.IntegrationTests;
 public class BookManagerTests : IDisposable
 {
     private readonly TestDbContextFactory _dbContextFactory;
+    private readonly Mock<IOpenLibraryManager> _mockOpenLibraryManager;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BookManagerTests"/> class.
@@ -24,16 +27,18 @@ public class BookManagerTests : IDisposable
     public BookManagerTests()
     {
         _dbContextFactory = new TestDbContextFactory();
+        _mockOpenLibraryManager = new Mock<IOpenLibraryManager>();
     }
 
     /// <summary>
     /// Creates a new instance of <see cref="BookManager"/> with the provided <see cref="AppDbContext"/>.
     /// </summary>
     /// <param name="context">The application database context.</param>
+    /// <param name="OpenLibraryManager">The Open Library service mock.</param>
     /// <returns>A new <see cref="BookManager"/> instance.</returns>
-    private static BookManager CreateManager(AppDbContext context)
+    private static BookManager CreateManager(AppDbContext context, IOpenLibraryManager OpenLibraryManager)
     {
-        return new BookManager(context);
+        return new BookManager(context, OpenLibraryManager);
     }
     /// <summary>
     /// Creates a sample <see cref="Book"/> entity, adds it to the context, and saves changes.
@@ -87,7 +92,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var seededBook = CreateAndAddSampleBook(context, isActive: true);
 
         // Act
@@ -110,7 +115,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var seededBook = CreateAndAddSampleBook(context, isActive: false);
 
         // Act
@@ -128,7 +133,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var nonExistentId = 999UL;
 
         // Act
@@ -146,7 +151,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var activeBook1 = CreateAndAddSampleBook(context, title: "Active Book 1", isbn: "111", isActive: true);
         var activeBook2 = CreateAndAddSampleBook(context, title: "Active Book 2", isbn: "222", isActive: true);
         CreateAndAddSampleBook(context, title: "Inactive Book", isbn: "333", isActive: false); // Inactive book
@@ -181,7 +186,7 @@ public class BookManagerTests : IDisposable
         using var context = _dbContextFactory.CreateContext();
         CreateAndAddSampleBook(context, title: "Inactive Book Only", isbn: "777", isActive: false);
         await context.SaveChangesAsync();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
 
         // Act
         var result = await manager.GetAllBooksAsync();
@@ -198,7 +203,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var bookDto = CreateSampleBookDto(guid: Guid.NewGuid());
         var utcNowBeforeCreate = DateTime.UtcNow;
 
@@ -230,7 +235,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var bookDto = CreateSampleBookDto(guid: Guid.Empty); // Manager should generate a new Guid
 
         // Act
@@ -251,7 +256,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var existingGuid = Guid.NewGuid();
         CreateAndAddSampleBook(context, guid: existingGuid, isActive: true);
         var bookDto = CreateSampleBookDto(guid: existingGuid);
@@ -272,7 +277,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var existingGuid = Guid.NewGuid();
         CreateAndAddSampleBook(context, guid: existingGuid, isActive: false); // Existing book is inactive
         var bookDto = CreateSampleBookDto(guid: existingGuid, title: "New Book Same Guid Inactive");
@@ -294,7 +299,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var existingISBN = "111222333X";
         CreateAndAddSampleBook(context, isbn: existingISBN, isActive: true);
         var bookDto = CreateSampleBookDto(isbn: existingISBN);
@@ -315,7 +320,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var existingISBN = "9876543210";
         CreateAndAddSampleBook(context, title: "Inactive Book Old ISBN", isbn: existingISBN, isActive: false); // Existing book is inactive
 
@@ -338,7 +343,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var bookToUpdate = CreateAndAddSampleBook(context, title: "Original Title", isbn: "original-isbn");
 
         // Detach to simulate fetching and then updating
@@ -379,7 +384,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var nonExistentId = 999UL;
         var bookUpdateDto = CreateSampleBookDto();
 
@@ -399,7 +404,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var bookToUpdate = CreateAndAddSampleBook(context, title: "Book To Update", isbn: "isbn-to-update", isActive: true);
         var otherBook = CreateAndAddSampleBook(context, title: "Other Book", isbn: "existing-isbn", isActive: true);
 
@@ -421,7 +426,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var bookToDelete = CreateAndAddSampleBook(context, isActive: true);
         var originalUpdatedOn = bookToDelete.UpdatedOn;
         await Task.Delay(50); // Ensure UpdatedOn will be different
@@ -449,7 +454,7 @@ public class BookManagerTests : IDisposable
     {
         // Arrange
         using var context = _dbContextFactory.CreateContext();
-        var manager = CreateManager(context);
+        var manager = CreateManager(context, _mockOpenLibraryManager.Object);
         var nonExistentId = 999UL;
 
         // Act

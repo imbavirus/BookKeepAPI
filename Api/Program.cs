@@ -9,6 +9,8 @@ using BookKeepAPI.Application.Managers.BookData;
 using BookKeepAPI.Application.Managers.BookData.Implementation;
 using BookKeepAPI.Api.Services.BookData;
 using BookKeepAPI.Api.Services.BookData.Implementation;
+using BookKeepAPI.Application.Managers.External.OpenLibrary;
+using BookKeepAPI.Application.Managers.External.OpenLibrary.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +25,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add controllers
 builder.Services.AddControllers();
 
-builder.WebHost.UseUrls("http://0.0.0.0:5000");
+builder.WebHost.UseUrls("http://0.0.0.0:5001");
 
 // Register FluentValidation
 builder.Services.AddFluentValidationAutoValidation(); // Enables automatic server-side validation
@@ -31,8 +33,20 @@ builder.Services.AddValidatorsFromAssemblyContaining<BaseModelValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<BookValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<BookDtoValidator>();
 
+// This line registers IHttpClientFactory and related services.
+builder.Services.AddHttpClient();
+
+// Your OpenLibraryManager uses a named client: _httpClientFactory.CreateClient("OpenLibraryClient");
+// While AddHttpClient() above is enough to make IHttpClientFactory available,
+// you can also configure this named client specifically if needed:
+builder.Services.AddHttpClient("OpenLibraryClient", client =>
+{
+    client.DefaultRequestHeaders.Add("User-Agent", "BookKeepAPI");
+});
+
 // Add Managers
 builder.Services.AddScoped<IBookManager, BookManager>();
+builder.Services.AddScoped<IOpenLibraryManager, OpenLibraryManager>();
 
 // Add Services
 builder.Services.AddScoped<IBookService, BookService>();

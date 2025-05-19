@@ -54,7 +54,7 @@ public class Book(string title, string author, string isbn, string? description 
     /// Initializes non-nullable string properties to satisfy the C# compiler;
     /// EF Core will overwrite these with values from the database upon materialization.
     /// </summary>
-    private Book() : this(string.Empty, string.Empty, string.Empty) // Ensure BaseModel properties are initialized (e.g., Guid, CreatedOn)
+    private Book() : this(string.Empty, string.Empty, string.Empty) // Ensure BaseModel properties are Initialized (e.g., Guid, CreatedOn)
     {
     }
 

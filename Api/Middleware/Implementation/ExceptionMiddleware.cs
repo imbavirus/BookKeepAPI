@@ -8,28 +8,21 @@ namespace BookKeepAPI.Api.Middleware.Implementation;
 /// <summary>
 /// Middleware to handle exceptions globally, log them, and return a standardized error response.
 /// </summary>
-public class ExceptionMiddleware : IExceptionMiddleware
+/// <remarks>
+/// Initializes a new instance of the <see cref="IExceptionMiddleware"/> class.
+/// </remarks>
+/// <param name="next">The next middleware in the pipeline.</param>
+/// <param name="logger">The logger instance.</param>
+/// <param name="env">The hosting environment instance.</param>
+public class ExceptionMiddleware(
+    RequestDelegate next,
+    ILogger<IExceptionMiddleware> logger,
+    IHostEnvironment env
+        ) : IExceptionMiddleware
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<IExceptionMiddleware> _logger;
-    private readonly IHostEnvironment _env;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="IExceptionMiddleware"/> class.
-    /// </summary>
-    /// <param name="next">The next middleware in the pipeline.</param>
-    /// <param name="logger">The logger instance.</param>
-    /// <param name="env">The hosting environment instance.</param>
-    public ExceptionMiddleware(
-        RequestDelegate next,
-        ILogger<IExceptionMiddleware> logger,
-        IHostEnvironment env
-        )
-    {
-        _next = next ?? throw new ArgumentNullException(nameof(next));
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _env = env ?? throw new ArgumentNullException(nameof(env));
-    }
+    private readonly RequestDelegate _next = next ?? throw new ArgumentNullException(nameof(next));
+    private readonly ILogger<IExceptionMiddleware> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    private readonly IHostEnvironment _env = env ?? throw new ArgumentNullException(nameof(env));
 
     /// <summary>
     /// Invokes the middleware to handle the request and catch exceptions.

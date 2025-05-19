@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookKeepAPI.Application.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250518232805_initial")]
-    partial class initial
+    [Migration("20250519053550_InitialData")]
+    partial class InitialData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
