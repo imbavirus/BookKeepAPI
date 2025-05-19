@@ -7,6 +7,8 @@ using BookKeepAPI.Application.Validators;
 using BookKeepAPI.Application.Validators.BookData;
 using BookKeepAPI.Application.Managers.BookData;
 using BookKeepAPI.Application.Managers.BookData.Implementation;
+using BookKeepAPI.Api.Services.BookData;
+using BookKeepAPI.Api.Services.BookData.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +35,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<BookDtoValidator>();
 builder.Services.AddScoped<IBookManager, BookManager>();
 
 // Add Services
-// builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IBookService, BookService>();
 
 // Add CORS services and define a policy
 builder.Services.AddCors(options =>
