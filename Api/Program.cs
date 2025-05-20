@@ -32,7 +32,7 @@ if (endpoints != null && endpoints.Length > 0)
 } 
 else
 {
-    builder.WebHost.UseUrls("http://localhost:5000");
+    builder.WebHost.UseUrls("http://localhost:5001");
 }
 
 // Register FluentValidation
@@ -68,7 +68,8 @@ builder.Services.AddCors(options =>
             var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
             if (allowedOrigins != null && allowedOrigins.Length > 0)
             {
-                policy.WithOrigins(allowedOrigins)
+                policy//.WithOrigins(allowedOrigins)
+                .AllowAnyOrigin() // Allow any origin for now, but we can restrict it later
                 // Disabled for now, but we can enable it if needed
                 // .AllowCredentials() // If your frontend needs to send cookies or authorization headers
                 .AllowAnyHeader() // Or be more specific with .WithHeaders("Content-Type", "Authorization", etc.)
