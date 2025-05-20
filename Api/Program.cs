@@ -25,7 +25,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Add controllers
 builder.Services.AddControllers();
 
-builder.WebHost.UseUrls("http://0.0.0.0:5001");
+var endpoints = builder.Configuration.GetSection("Endpoints").Get<string[]>();
+if (endpoints != null && endpoints.Length > 0)
+{
+    builder.WebHost.UseUrls(endpoints);
+} 
+else
+{
+    builder.WebHost.UseUrls("http://localhost:5000");
+}
 
 // Register FluentValidation
 builder.Services.AddFluentValidationAutoValidation(); // Enables automatic server-side validation
@@ -54,13 +62,19 @@ builder.Services.AddScoped<IBookService, BookService>();
 // Add CORS services and define a policy
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "AllowAllDev",
-                      policy =>
-                      {
-                          policy.AllowAnyOrigin()
-                                .AllowAnyMethod()
-                                .AllowAnyHeader();
-                      });
+    options.AddPolicy(name: "CorsPolicy",
+        policy =>
+        {
+            var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+            if (allowedOrigins != null && allowedOrigins.Length > 0)
+            {
+                policy.WithOrigins(allowedOrigins)
+                // Disabled for now, but we can enable it if needed
+                // .AllowCredentials() // If your frontend needs to send cookies or authorization headers
+                .AllowAnyHeader() // Or be more specific with .WithHeaders("Content-Type", "Authorization", etc.)
+                .WithMethods("GET", "POST", "PUT", "DELETE"); // Specify allowed methods
+            }
+        });
 });
 
 
@@ -89,7 +103,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 // Apply the CORS policy. This should come after UseRouting and before
-app.UseCors("AllowAllDev");
+app.UseCors("CorsPolicy");
 
 app.MapControllers();
 
