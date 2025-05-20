@@ -50,12 +50,12 @@ public class ExceptionMiddleware(
             case KeyNotFoundException ex:
                 _logger.LogError(ex, "An argument null error occurred. Request Path: {Path}", context.Request.Path);
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
-                await context.Response.WriteAsync(Helper.StringifyObject(new ErrorResponse(ex.Message, "Argument null error")));
+                await context.Response.WriteAsync(Helper.StringifyObject(new ErrorResponse(ex.Message, "Key not found")));
                 break;
             case InvalidOperationException ex:
                 _logger.LogError(ex, "An argument null error occurred. Request Path: {Path}", context.Request.Path);
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsync(Helper.StringifyObject(new ErrorResponse(ex.Message, "Argument null error")));
+                await context.Response.WriteAsync(Helper.StringifyObject(new ErrorResponse(ex.Message, "Invalid operation error")));
                 break;
             case ArgumentNullException ex:
                 _logger.LogError(ex, "An argument null error occurred. Request Path: {Path}", context.Request.Path);
