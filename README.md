@@ -48,7 +48,7 @@ cd BookKeepAPI
 dotnet ef database update --project ./Application --startup-project ./API
 ```
 
-For convenience, you can also use the provided PowerShell script:
+For convenience, you can also use the provided PowerShell 7 script:
 ```powershell
 ./setup-database.ps1
 ```
@@ -60,7 +60,7 @@ Run the API using the .NET CLI:
 dotnet run --project ./API
 ```
 
-Alternatively, use the convenience script:
+For convenience, you can also use the provided PowerShell 7 script:
 ```powershell
 ./run.ps1
 ```
@@ -123,7 +123,7 @@ Run tests using the .NET CLI:
 dotnet test
 ```
 
-Or use the convenience script:
+For convenience, you can also use the provided PowerShell 7 script:
 ```powershell
 ./run-tests.ps1
 ```
@@ -143,7 +143,7 @@ dotnet ef migrations add "YourMigrationName" --project ./Application --startup-p
 dotnet ef database update --project ./Application --startup-project ./API
 ```
 
-For convenience, you can use the provided PowerShell script which combines these steps:
+For convenience, you can also use the provided PowerShell 7 script which combines these steps:
 ```powershell
 ./run-migrations.ps1 -MigrationName "YourMigrationName"
 ```
